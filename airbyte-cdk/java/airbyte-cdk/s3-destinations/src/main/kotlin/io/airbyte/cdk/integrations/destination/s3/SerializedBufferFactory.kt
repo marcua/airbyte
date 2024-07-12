@@ -45,7 +45,8 @@ class SerializedBufferFactory {
         @JvmStatic
         fun getCreateFunction(
             config: S3DestinationConfig,
-            createStorageFunctionWithoutExtension: Function<String, BufferStorage>
+            createStorageFunctionWithoutExtension: Function<String, BufferStorage>,
+            useV2FieldNames: Boolean = false,
         ): BufferCreateFunction {
             val formatConfig = config.formatConfig!!
             logger.info { "S3 format config: $formatConfig" }
@@ -58,7 +59,8 @@ class SerializedBufferFactory {
                     }
                     return AvroSerializedBuffer.createFunction(
                         formatConfig as UploadAvroFormatConfig,
-                        createStorageFunctionWithExtension
+                        createStorageFunctionWithExtension,
+                        useV2FieldNames
                     )
                 }
                 FileUploadFormat.CSV -> {

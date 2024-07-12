@@ -42,7 +42,7 @@ class JsonLSerializedBuffer(
     }
 
     @Deprecated("Deprecated in Java")
-    override fun writeRecord(record: AirbyteRecordMessage) {
+    override fun writeRecord(record: AirbyteRecordMessage, generationId: Long) {
         val json = MAPPER.createObjectNode()
         json.put(JavaBaseConstants.COLUMN_NAME_AB_ID, UUID.randomUUID().toString())
         json.put(JavaBaseConstants.COLUMN_NAME_EMITTED_AT, record.emittedAt)

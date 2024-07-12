@@ -63,7 +63,7 @@ class CsvSerializedBuffer(
      */
     @Deprecated("Deprecated in Java")
     @Throws(IOException::class)
-    override fun writeRecord(record: AirbyteRecordMessage) {
+    override fun writeRecord(record: AirbyteRecordMessage, generationId: Long) {
         csvPrinter!!.printRecord(csvSheetGenerator.getDataRow(UUID.randomUUID(), record))
     }
 
