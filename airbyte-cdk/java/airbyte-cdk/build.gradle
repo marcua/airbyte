@@ -30,9 +30,6 @@ allprojects {
                     password System.getenv('CLOUDREPO_PASSWORD')
                 }
             }
-//            maven {
-//                url 'https://jitpack.io' }
-//            }
         }
     }
 
