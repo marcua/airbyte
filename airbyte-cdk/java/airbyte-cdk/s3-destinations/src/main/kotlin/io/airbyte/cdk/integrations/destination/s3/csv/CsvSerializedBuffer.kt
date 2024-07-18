@@ -4,6 +4,7 @@
 
 package io.airbyte.cdk.integrations.destination.s3.csv
 
+import io.airbyte.cdk.integrations.base.JavaBaseConstants
 import io.airbyte.cdk.integrations.destination.record_buffer.BaseSerializedBuffer
 import io.airbyte.cdk.integrations.destination.record_buffer.BufferCreateFunction
 import io.airbyte.cdk.integrations.destination.record_buffer.BufferStorage
@@ -29,7 +30,8 @@ private val logger = KotlinLogging.logger {}
 class CsvSerializedBuffer(
     bufferStorage: BufferStorage,
     private val csvSheetGenerator: CsvSheetGenerator,
-    compression: Boolean
+    compression: Boolean,
+    private val useV2FieldNames: Boolean = false,
 ) : BaseSerializedBuffer(bufferStorage) {
     private var csvPrinter: CSVPrinter? = null
     private var csvFormat: CSVFormat
@@ -116,14 +118,16 @@ class CsvSerializedBuffer(
         fun createFunction(
             config: UploadCsvFormatConfig?,
             createStorageFunction: Callable<BufferStorage>,
+            useV2FieldNames: Boolean
         ): BufferCreateFunction {
             return BufferCreateFunction {
                 stream: AirbyteStreamNameNamespacePair,
                 catalog: ConfiguredAirbyteCatalog ->
                 if (config == null) {
+                    val columnFormat = if (useV2FieldNames) JavaBaseConstants.DestinationColumns.V2_WITH_GENERATION else JavaBaseConstants.DestinationColumns.LEGACY
                     return@BufferCreateFunction CsvSerializedBuffer(
                         createStorageFunction.call(),
-                        StagingDatabaseCsvSheetGenerator(),
+                        StagingDatabaseCsvSheetGenerator(destinationColumns = columnFormat),
                         true,
                     )
                 }

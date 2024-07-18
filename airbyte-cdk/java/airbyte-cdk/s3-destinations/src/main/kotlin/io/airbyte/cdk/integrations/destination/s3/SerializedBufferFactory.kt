@@ -71,7 +71,8 @@ class SerializedBufferFactory {
                     }
                     return CsvSerializedBuffer.createFunction(
                         formatConfig as UploadCsvFormatConfig,
-                        createStorageFunctionWithExtension
+                        createStorageFunctionWithExtension,
+                        useV2FieldNames
                     )
                 }
                 FileUploadFormat.JSONL -> {
@@ -83,6 +84,7 @@ class SerializedBufferFactory {
                     return JsonLSerializedBuffer.createBufferFunction(
                         formatConfig as UploadJsonlFormatConfig,
                         createStorageFunctionWithExtension,
+                        useV2FieldNames
                     )
                 }
                 FileUploadFormat.PARQUET -> {
