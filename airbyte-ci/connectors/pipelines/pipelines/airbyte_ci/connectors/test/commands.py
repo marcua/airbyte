@@ -204,8 +204,6 @@ async def test(
         if ctx.obj["is_ci"]:
             global_success = all(connector_context.state is ContextState.SUCCESSFUL for connector_context in connectors_tests_contexts)
             update_global_commit_status_check_for_tests(ctx.obj, "success" if global_success else "failure")
-            if not global_success:
-                exit(1)
 
     # If we reach this point, it means that all the connectors have been tested so the pipeline did its job and can exit with success.
     return True
