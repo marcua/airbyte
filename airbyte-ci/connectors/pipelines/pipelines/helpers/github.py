@@ -47,6 +47,7 @@ def update_commit_status_check(
     description: str,
     context: str,
     is_optional: bool = False,
+    pr_url: Optional[str] = None,
     should_send: bool = True,
     logger: Optional[Logger] = None,
 ) -> None:
@@ -114,7 +115,8 @@ def update_global_commit_status_check_for_tests(click_context: dict, github_stat
         click_context["gha_workflow_run_url"],
         click_context["global_status_check_description"],
         click_context["global_status_check_context"],
-        should_send=click_context.get("ci_context") == CIContext.PULL_REQUEST,
+        click_context["global_status_check_pr_url"],
+        should_send=click_context.get("ci_context") == CIContext.PULL_REQUEST or click_context["global_status_check_pr_url"],
         logger=logger,
     )
 

@@ -3,7 +3,7 @@
 #
 
 import shutil
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 import asyncclick as click
 from pipelines import main_logger
@@ -88,6 +88,12 @@ TESTS_SKIPPED_BY_DEFAULT = [
     help="The description of the global status check which will be sent to GitHub status API.",
     default=GITHUB_GLOBAL_DESCRIPTION_FOR_TESTS,
 )
+@click.option(
+    "--global-status-check-pr-url",
+    "global_status_check_pr_url",
+    help="The URL of PR against which a workflow is being run, when the workflow is invoked manually.",
+    default=None,
+)
 @click.argument(
     "extra_params", nargs=-1, type=click.UNPROCESSED, callback=argument_parsing.build_extra_params_mapping(CONNECTOR_TEST_STEP_ID)
 )
@@ -101,6 +107,7 @@ async def test(
     only_steps: List[str],
     global_status_check_context: str,
     global_status_check_description: str,
+    global_status_check_pr_url: Optional[str],
     extra_params: Dict[CONNECTOR_TEST_STEP_ID, STEP_PARAMS],
 ) -> bool:
     """Runs a test pipeline for the selected connectors.
@@ -110,6 +117,7 @@ async def test(
     """
     ctx.obj["global_status_check_context"] = global_status_check_context
     ctx.obj["global_status_check_description"] = global_status_check_description
+    ctx.obj["global_status_check_pr_url"] = global_status_check_pr_url
 
     if ctx.obj["ci_gcp_credentials"]:
         ctx.obj["secret_stores"][MAIN_CONNECTOR_TESTING_SECRET_STORE_ALIAS] = GSMSecretStore(ctx.obj["ci_gcp_credentials"])
