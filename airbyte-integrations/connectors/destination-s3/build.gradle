@@ -17,7 +17,6 @@ application {
 }
 
 run {
-    standardInput = new FileInputStream('/Users/jschmidt/dev/destinations-tools/fake-faker/test-data-fake-1-stream-arrays.json')
     standardInput = System.in
 }
 

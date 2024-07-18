@@ -35,7 +35,7 @@ constructor(
         return destinationColumns.rawColumns
     }
 
-    override fun getDataRow(id: UUID, recordMessage: AirbyteRecordMessage): List<Any> {
+    override fun getDataRow(id: UUID, recordMessage: AirbyteRecordMessage, generationId: Long): List<Any> {
         return getDataRow(
             id,
             Jsons.serialize(recordMessage.data),

@@ -4,6 +4,7 @@
 package io.airbyte.cdk.integrations.destination.s3.csv
 
 import com.fasterxml.jackson.databind.JsonNode
+import io.airbyte.cdk.integrations.base.JavaBaseConstants
 import io.airbyte.cdk.integrations.destination.s3.util.Flattening
 import io.airbyte.protocol.models.v0.AirbyteRecordMessage
 import java.util.*
@@ -18,7 +19,7 @@ interface CsvSheetGenerator {
     // TODO: (ryankfu) remove this and switch over all destinations to pass in serialized
     // recordStrings,
     // both for performance and lowers memory footprint
-    fun getDataRow(id: UUID, recordMessage: AirbyteRecordMessage): List<Any>
+    fun getDataRow(id: UUID, recordMessage: AirbyteRecordMessage, generationId: Long = 0): List<Any>
 
     fun getDataRow(formattedData: JsonNode): List<Any>
 
@@ -32,11 +33,11 @@ interface CsvSheetGenerator {
 
     object Factory {
         @JvmStatic
-        fun create(jsonSchema: JsonNode?, formatConfig: UploadCsvFormatConfig): CsvSheetGenerator {
+        fun create(jsonSchema: JsonNode?, formatConfig: UploadCsvFormatConfig, useV2FieldNames: Boolean = false): CsvSheetGenerator {
             return if (formatConfig.flattening == Flattening.NO) {
-                NoFlatteningSheetGenerator()
+                NoFlatteningSheetGenerator(useV2FieldNames)
             } else if (formatConfig.flattening == Flattening.ROOT_LEVEL) {
-                RootLevelFlatteningSheetGenerator(jsonSchema!!)
+                RootLevelFlatteningSheetGenerator(jsonSchema!!, useV2FieldNames)
             } else {
                 throw IllegalArgumentException(
                     "Unexpected flattening config: " + formatConfig.flattening

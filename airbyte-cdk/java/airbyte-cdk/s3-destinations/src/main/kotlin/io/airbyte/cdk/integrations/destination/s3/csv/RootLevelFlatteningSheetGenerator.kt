@@ -11,8 +11,8 @@ import io.airbyte.commons.json.Jsons
 import io.airbyte.commons.util.MoreIterators
 import java.util.LinkedList
 
-class RootLevelFlatteningSheetGenerator(jsonSchema: JsonNode) :
-    BaseSheetGenerator(), CsvSheetGenerator {
+class RootLevelFlatteningSheetGenerator(jsonSchema: JsonNode, private val useV2FieldNames: Boolean = false) :
+    BaseSheetGenerator(useV2FieldNames), CsvSheetGenerator {
     /** Keep a header list to iterate the input json object with a defined order. */
     private val recordHeaders: List<String> =
         MoreIterators.toList(
@@ -21,11 +21,21 @@ class RootLevelFlatteningSheetGenerator(jsonSchema: JsonNode) :
             .sorted()
 
     override fun getHeaderRow(): List<String> {
-        val headers: MutableList<String> =
-            Lists.newArrayList(
+        val headers = if (useV2FieldNames) {
+            mutableListOf(
+                JavaBaseConstants.COLUMN_NAME_AB_RAW_ID,
+                JavaBaseConstants.COLUMN_NAME_AB_EXTRACTED_AT,
+                JavaBaseConstants.COLUMN_NAME_AB_LOADED_AT,
+                JavaBaseConstants.COLUMN_NAME_AB_META,
+                JavaBaseConstants.COLUMN_NAME_AB_GENERATION_ID,
+            )
+        } else {
+            mutableListOf(
                 JavaBaseConstants.COLUMN_NAME_AB_ID,
                 JavaBaseConstants.COLUMN_NAME_EMITTED_AT,
             )
+        }
+
         headers.addAll(recordHeaders)
         return headers
     }

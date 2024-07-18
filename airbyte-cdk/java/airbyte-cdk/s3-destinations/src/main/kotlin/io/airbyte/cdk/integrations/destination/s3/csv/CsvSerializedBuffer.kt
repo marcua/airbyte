@@ -31,7 +31,6 @@ class CsvSerializedBuffer(
     bufferStorage: BufferStorage,
     private val csvSheetGenerator: CsvSheetGenerator,
     compression: Boolean,
-    private val useV2FieldNames: Boolean = false,
 ) : BaseSerializedBuffer(bufferStorage) {
     private var csvPrinter: CSVPrinter? = null
     private var csvFormat: CSVFormat
@@ -66,7 +65,7 @@ class CsvSerializedBuffer(
     @Deprecated("Deprecated in Java")
     @Throws(IOException::class)
     override fun writeRecord(record: AirbyteRecordMessage, generationId: Long) {
-        csvPrinter!!.printRecord(csvSheetGenerator.getDataRow(UUID.randomUUID(), record))
+        csvPrinter!!.printRecord(csvSheetGenerator.getDataRow(UUID.randomUUID(), record, generationId))
     }
 
     @Throws(IOException::class)
@@ -118,16 +117,15 @@ class CsvSerializedBuffer(
         fun createFunction(
             config: UploadCsvFormatConfig?,
             createStorageFunction: Callable<BufferStorage>,
-            useV2FieldNames: Boolean
+            useV2FieldNames: Boolean = false
         ): BufferCreateFunction {
             return BufferCreateFunction {
                 stream: AirbyteStreamNameNamespacePair,
                 catalog: ConfiguredAirbyteCatalog ->
                 if (config == null) {
-                    val columnFormat = if (useV2FieldNames) JavaBaseConstants.DestinationColumns.V2_WITH_GENERATION else JavaBaseConstants.DestinationColumns.LEGACY
                     return@BufferCreateFunction CsvSerializedBuffer(
                         createStorageFunction.call(),
-                        StagingDatabaseCsvSheetGenerator(destinationColumns = columnFormat),
+                        StagingDatabaseCsvSheetGenerator(),
                         true,
                     )
                 }
@@ -152,6 +150,7 @@ class CsvSerializedBuffer(
                                 ),
                             ),
                         config,
+                        useV2FieldNames,
                     )
                 val csvSettings =
                     CSVFormat.DEFAULT.withQuoteMode(QuoteMode.NON_NUMERIC)

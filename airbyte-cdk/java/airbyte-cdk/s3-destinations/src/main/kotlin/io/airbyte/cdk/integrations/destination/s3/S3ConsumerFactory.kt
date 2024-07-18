@@ -142,7 +142,8 @@ class S3ConsumerFactory {
                 s3Config,
                 Function<String, BufferStorage> { fileExtension: String ->
                     FileBuffer(fileExtension)
-                }
+                },
+                useV2FieldNames = true
             )
         return AsyncStreamConsumer(
             outputRecordCollector,

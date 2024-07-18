@@ -91,7 +91,7 @@ class SerializedBufferFactory {
                     // we can't choose the type of buffer storage with parquet because of how the
                     // underlying hadoop
                     // library is imposing file usage.
-                    return ParquetSerializedBuffer.createFunction(config)
+                    return ParquetSerializedBuffer.createFunction(config, useV2FieldNames)
                 }
                 else -> {
                     throw RuntimeException("Unexpected output format: ${Jsons.serialize(config)}")

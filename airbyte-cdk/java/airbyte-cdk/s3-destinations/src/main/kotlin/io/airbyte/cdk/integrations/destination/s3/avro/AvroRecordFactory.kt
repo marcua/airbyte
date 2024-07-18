@@ -15,7 +15,6 @@ import io.airbyte.protocol.models.v0.AirbyteRecordMessage
 import java.util.UUID
 import org.apache.avro.Schema
 import org.apache.avro.generic.GenericData
-import org.apache.avro.generic.GenericRecord
 import tech.allegro.schema.json2avro.converter.JsonAvroConverter
 
 class AvroRecordFactory(private val schema: Schema?, private val converter: JsonAvroConverter?) {
@@ -41,7 +40,6 @@ class AvroRecordFactory(private val schema: Schema?, private val converter: Json
         jsonRecord.put(JavaBaseConstants.COLUMN_NAME_AB_EXTRACTED_AT, recordMessage.emittedAt)
         jsonRecord.put(JavaBaseConstants.COLUMN_NAME_AB_LOADED_AT, System.currentTimeMillis())
         jsonRecord.put(JavaBaseConstants.COLUMN_NAME_AB_GENERATION_ID, generationId)
-        println("HERE meta: ${recordMessage.meta}")
         jsonRecord.replace(JavaBaseConstants.COLUMN_NAME_AB_META, MAPPER.valueToTree(recordMessage.meta) as ObjectNode)
 
         jsonRecord.setAll<JsonNode>(recordMessage.data as ObjectNode)

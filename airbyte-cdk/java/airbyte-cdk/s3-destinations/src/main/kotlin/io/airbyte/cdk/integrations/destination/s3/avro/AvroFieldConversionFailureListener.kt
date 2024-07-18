@@ -35,9 +35,6 @@ class AvroFieldConversionFailureListener: FieldConversionFailureListener() {
                     AirbyteRecordMessageMetaChange.Reason.DESTINATION_TYPECAST_ERROR.value()!!
                 )
                 .build()
-            println("HERE")
-            println(record.schema)
-            println(record)
             val meta = record.get("_airbyte_meta") as GenericData.Record
             @Suppress("UNCHECKED_CAST")
             val changes = meta.get("changes") as? MutableList<GenericData.Record>

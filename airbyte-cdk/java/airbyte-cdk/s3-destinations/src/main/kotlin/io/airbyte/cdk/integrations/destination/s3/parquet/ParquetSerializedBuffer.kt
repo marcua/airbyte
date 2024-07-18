@@ -76,6 +76,7 @@ class ParquetSerializedBuffer(
                     ?: throw RuntimeException("No such stream ${stream.namespace}.${stream.name}"),
                 stream.name,
                 stream.namespace,
+                useV2FieldNames = useV2FieldNames
             )
         bufferFile = Files.createTempFile(UUID.randomUUID().toString(), ".parquet")
         Files.deleteIfExists(bufferFile)
@@ -189,7 +190,7 @@ class ParquetSerializedBuffer(
 
     companion object {
         @JvmStatic
-        fun createFunction(s3DestinationConfig: S3DestinationConfig): BufferCreateFunction {
+        fun createFunction(s3DestinationConfig: S3DestinationConfig, useV2FieldNames: Boolean = false): BufferCreateFunction {
             return BufferCreateFunction {
                 stream: AirbyteStreamNameNamespacePair,
                 catalog: ConfiguredAirbyteCatalog ->
@@ -197,6 +198,7 @@ class ParquetSerializedBuffer(
                     s3DestinationConfig.formatConfig!!,
                     stream,
                     catalog,
+                    useV2FieldNames
                 )
             }
         }
