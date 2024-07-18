@@ -116,7 +116,7 @@ def update_global_commit_status_check_for_tests(click_context: dict, github_stat
         click_context["global_status_check_description"],
         click_context["global_status_check_context"],
         click_context["global_status_check_pr_url"],
-        should_send=click_context.get("ci_context") == CIContext.PULL_REQUEST or click_context["global_status_check_pr_url"],
+        should_send=click_context.get("ci_context") is True,  # TODO
         logger=logger,
     )
 
