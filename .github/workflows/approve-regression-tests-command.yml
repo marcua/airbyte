@@ -62,7 +62,19 @@ jobs:
       - name: Approve regression tests
         id: approve
         run: |
-          echo "approving ...."
+          echo "updating regression test status check if it exists ...."
+          response=$(curl --write-out '%{http_code}' --silent --output /dev/null \
+            --request POST \
+            --url ${{ github.api_url }}/repos/${{ github.repository }}/statuses/${{ steps.job-vars.outputs.latest_commit }} \
+            --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+            --header 'content-type: application/json' \
+            --data '{
+              "state": "success",
+              "context": "Regression Tests",
+              "target_url": "https://github.com/airbytehq/airbyte/tree/master/airbyte-ci/connectors/live-tests"
+            }')
+
+          echo "requirement was met ...."
           response=$(curl --write-out '%{http_code}' --silent --output /dev/null \
             --request POST \
             --url ${{ github.api_url }}/repos/${{ github.repository }}/statuses/${{ steps.job-vars.outputs.latest_commit }} \
