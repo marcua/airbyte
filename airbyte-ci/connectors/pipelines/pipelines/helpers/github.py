@@ -63,6 +63,7 @@ def update_commit_status_check(
         logger (Logger, optional): A logger to log info about updates. Defaults to None.
     """
     if not should_send:
+        safe_log(logger, f"should_send={should_send}")
         return
 
     safe_log(logger, f"Attempting to create {state} status for commit {sha} on Github in {context} context.")
@@ -84,6 +85,8 @@ def update_commit_status_check(
         description = f"[WARNING] optional check failed {context}: {description}"
 
     context = context if bool(os.environ.get("PRODUCTION", False)) is True else f"[please ignore] {context}"
+    safe_log(logger, f"context={context}")
+
     airbyte_repo.get_commit(sha=sha).create_status(
         state=state,
         target_url=target_url,

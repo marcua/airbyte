@@ -201,8 +201,10 @@ async def test(
 
     @ctx.call_on_close
     def send_commit_status_check() -> None:
+        main_logger.info(f"send_commit_status_check; ctx.obj['is_ci']={ctx.obj['is_ci']}")
         if ctx.obj["is_ci"]:
             global_success = all(connector_context.state is ContextState.SUCCESSFUL for connector_context in connectors_tests_contexts)
+            main_logger.info(f"send_commit_status_check; global_success={global_success}")
             update_global_commit_status_check_for_tests(ctx.obj, "success" if global_success else "failure")
 
     # If we reach this point, it means that all the connectors have been tested so the pipeline did its job and can exit with success.
