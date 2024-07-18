@@ -4,7 +4,6 @@
 
 package io.airbyte.cdk.integrations.destination.s3.csv
 
-import io.airbyte.cdk.integrations.base.JavaBaseConstants
 import io.airbyte.cdk.integrations.destination.record_buffer.BaseSerializedBuffer
 import io.airbyte.cdk.integrations.destination.record_buffer.BufferCreateFunction
 import io.airbyte.cdk.integrations.destination.record_buffer.BufferStorage
@@ -65,7 +64,9 @@ class CsvSerializedBuffer(
     @Deprecated("Deprecated in Java")
     @Throws(IOException::class)
     override fun writeRecord(record: AirbyteRecordMessage, generationId: Long) {
-        csvPrinter!!.printRecord(csvSheetGenerator.getDataRow(UUID.randomUUID(), record, generationId))
+        csvPrinter!!.printRecord(
+            csvSheetGenerator.getDataRow(UUID.randomUUID(), record, generationId)
+        )
     }
 
     @Throws(IOException::class)

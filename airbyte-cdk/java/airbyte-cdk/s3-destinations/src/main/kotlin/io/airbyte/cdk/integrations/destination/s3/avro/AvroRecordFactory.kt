@@ -34,13 +34,20 @@ class AvroRecordFactory(private val schema: Schema?, private val converter: Json
         return converter!!.convertToGenericDataRecord(WRITER.writeValueAsBytes(jsonRecord), schema)
     }
 
-    fun getAvroRecordV2(id: UUID, generationId: Long, recordMessage: AirbyteRecordMessage): GenericData.Record {
+    fun getAvroRecordV2(
+        id: UUID,
+        generationId: Long,
+        recordMessage: AirbyteRecordMessage
+    ): GenericData.Record {
         val jsonRecord = MAPPER.createObjectNode()
         jsonRecord.put(JavaBaseConstants.COLUMN_NAME_AB_RAW_ID, id.toString())
         jsonRecord.put(JavaBaseConstants.COLUMN_NAME_AB_EXTRACTED_AT, recordMessage.emittedAt)
         jsonRecord.put(JavaBaseConstants.COLUMN_NAME_AB_LOADED_AT, System.currentTimeMillis())
         jsonRecord.put(JavaBaseConstants.COLUMN_NAME_AB_GENERATION_ID, generationId)
-        jsonRecord.replace(JavaBaseConstants.COLUMN_NAME_AB_META, MAPPER.valueToTree(recordMessage.meta) as ObjectNode)
+        jsonRecord.replace(
+            JavaBaseConstants.COLUMN_NAME_AB_META,
+            MAPPER.valueToTree(recordMessage.meta) as ObjectNode
+        )
 
         jsonRecord.setAll<JsonNode>(recordMessage.data as ObjectNode)
 

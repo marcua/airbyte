@@ -17,7 +17,6 @@ import java.util.function.Predicate
 import org.apache.avro.LogicalTypes
 import org.apache.avro.Schema
 import org.apache.avro.SchemaBuilder
-import org.apache.avro.generic.GenericData
 import tech.allegro.schema.json2avro.converter.AdditionalPropertyField
 
 private val logger = KotlinLogging.logger {}
@@ -36,7 +35,12 @@ class JsonToAvroSchemaConverter {
     }
 
     /** @return Avro schema based on the input `jsonSchema`. */
-    fun getAvroSchema(jsonSchema: JsonNode, streamName: String, namespace: String?, useV2FieldNames: Boolean = false): Schema {
+    fun getAvroSchema(
+        jsonSchema: JsonNode,
+        streamName: String,
+        namespace: String?,
+        useV2FieldNames: Boolean = false
+    ): Schema {
         return getAvroSchema(
             jsonSchema,
             streamName,
@@ -126,19 +130,34 @@ class JsonToAvroSchemaConverter {
                     .name(JavaBaseConstants.COLUMN_NAME_AB_GENERATION_ID)
                     .type(Schema.create(Schema.Type.LONG))
                     .noDefault()
-                val changeSchema: Schema = SchemaBuilder.builder()
-                    .record("change").fields()
-                    .name("field").type().stringType().noDefault()
-                    .name("change").type().stringType().noDefault()
-                    .name("reason").type().stringType().noDefault()
-                    .endRecord()
+                val changeSchema: Schema =
+                    SchemaBuilder.builder()
+                        .record("change")
+                        .fields()
+                        .name("field")
+                        .type()
+                        .stringType()
+                        .noDefault()
+                        .name("change")
+                        .type()
+                        .stringType()
+                        .noDefault()
+                        .name("reason")
+                        .type()
+                        .stringType()
+                        .noDefault()
+                        .endRecord()
                 assembler
                     .name(JavaBaseConstants.COLUMN_NAME_AB_META)
-                    .type(SchemaBuilder.builder()
-                        .record(JavaBaseConstants.COLUMN_NAME_AB_META)
-                        .fields()
-                        .name("changes").type(Schema.createArray(changeSchema)).noDefault()
-                        .endRecord())
+                    .type(
+                        SchemaBuilder.builder()
+                            .record(JavaBaseConstants.COLUMN_NAME_AB_META)
+                            .fields()
+                            .name("changes")
+                            .type(Schema.createArray(changeSchema))
+                            .noDefault()
+                            .endRecord()
+                    )
                     .noDefault()
             }
         }

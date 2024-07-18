@@ -4,7 +4,6 @@
 package io.airbyte.cdk.integrations.destination.s3.csv
 
 import com.fasterxml.jackson.databind.JsonNode
-import io.airbyte.cdk.integrations.base.JavaBaseConstants
 import io.airbyte.cdk.integrations.destination.s3.util.Flattening
 import io.airbyte.protocol.models.v0.AirbyteRecordMessage
 import java.util.*
@@ -33,7 +32,11 @@ interface CsvSheetGenerator {
 
     object Factory {
         @JvmStatic
-        fun create(jsonSchema: JsonNode?, formatConfig: UploadCsvFormatConfig, useV2FieldNames: Boolean = false): CsvSheetGenerator {
+        fun create(
+            jsonSchema: JsonNode?,
+            formatConfig: UploadCsvFormatConfig,
+            useV2FieldNames: Boolean = false
+        ): CsvSheetGenerator {
             return if (formatConfig.flattening == Flattening.NO) {
                 NoFlatteningSheetGenerator(useV2FieldNames)
             } else if (formatConfig.flattening == Flattening.ROOT_LEVEL) {

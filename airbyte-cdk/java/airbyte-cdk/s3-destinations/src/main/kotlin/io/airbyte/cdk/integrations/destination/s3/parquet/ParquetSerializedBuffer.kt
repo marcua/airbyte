@@ -80,7 +80,8 @@ class ParquetSerializedBuffer(
             )
         bufferFile = Files.createTempFile(UUID.randomUUID().toString(), ".parquet")
         Files.deleteIfExists(bufferFile)
-        val converter = if (useV2FieldNames) AvroConstants.JSON_CONVERTER_V2 else AvroConstants.JSON_CONVERTER
+        val converter =
+            if (useV2FieldNames) AvroConstants.JSON_CONVERTER_V2 else AvroConstants.JSON_CONVERTER
         avroRecordFactory = AvroRecordFactory(schema, converter)
         val uploadParquetFormatConfig: UploadParquetFormatConfig =
             uploadFormatConfig as UploadParquetFormatConfig
@@ -114,7 +115,9 @@ class ParquetSerializedBuffer(
         if (inputStream == null && !isClosed) {
             val startCount: Long = byteCount
             if (useV2FieldNames) {
-                parquetWriter.write(avroRecordFactory.getAvroRecordV2(UUID.randomUUID(), generationId, record))
+                parquetWriter.write(
+                    avroRecordFactory.getAvroRecordV2(UUID.randomUUID(), generationId, record)
+                )
             } else {
                 parquetWriter.write(avroRecordFactory.getAvroRecord(UUID.randomUUID(), record))
             }
@@ -190,7 +193,10 @@ class ParquetSerializedBuffer(
 
     companion object {
         @JvmStatic
-        fun createFunction(s3DestinationConfig: S3DestinationConfig, useV2FieldNames: Boolean = false): BufferCreateFunction {
+        fun createFunction(
+            s3DestinationConfig: S3DestinationConfig,
+            useV2FieldNames: Boolean = false
+        ): BufferCreateFunction {
             return BufferCreateFunction {
                 stream: AirbyteStreamNameNamespacePair,
                 catalog: ConfiguredAirbyteCatalog ->

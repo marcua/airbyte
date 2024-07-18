@@ -39,7 +39,8 @@ class AvroSerializedBuffer(
         withCompression(false)
         this.codecFactory = codecFactory
         this.schema = schema
-        val converter = if (useV2FieldNames) AvroConstants.JSON_CONVERTER_V2 else AvroConstants.JSON_CONVERTER
+        val converter =
+            if (useV2FieldNames) AvroConstants.JSON_CONVERTER_V2 else AvroConstants.JSON_CONVERTER
         avroRecordFactory = AvroRecordFactory(schema, converter)
         dataFileWriter = null
     }
@@ -56,7 +57,9 @@ class AvroSerializedBuffer(
     @Throws(IOException::class)
     override fun writeRecord(record: AirbyteRecordMessage, generationId: Long) {
         if (this.useV2FieldNames) {
-            dataFileWriter!!.append(avroRecordFactory.getAvroRecordV2(UUID.randomUUID(), generationId, record))
+            dataFileWriter!!.append(
+                avroRecordFactory.getAvroRecordV2(UUID.randomUUID(), generationId, record)
+            )
         } else {
             dataFileWriter!!.append(avroRecordFactory.getAvroRecord(UUID.randomUUID(), record))
         }
@@ -125,7 +128,12 @@ class AvroSerializedBuffer(
                         useV2FieldNames = useV2FieldNames
                     )
                 println("schema: $schema")
-                AvroSerializedBuffer(createStorageFunction.call(), codecFactory, schema, useV2FieldNames)
+                AvroSerializedBuffer(
+                    createStorageFunction.call(),
+                    codecFactory,
+                    schema,
+                    useV2FieldNames
+                )
             }
         }
     }

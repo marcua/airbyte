@@ -53,7 +53,8 @@ class SerializedBufferingStrategy
 
         val buffer = getOrCreateBuffer(stream)
 
-        @Suppress("DEPRECATION") val actualMessageSizeInBytes = buffer.accept(message.record, generationId)
+        @Suppress("DEPRECATION")
+        val actualMessageSizeInBytes = buffer.accept(message.record, generationId)
         totalBufferSizeInBytes += actualMessageSizeInBytes
         // Flushes buffer when either the buffer was completely filled or only a single stream was
         // filled

@@ -14,7 +14,11 @@ import java.util.*
  * two columns, which is shared by downstream implementations.
  */
 abstract class BaseSheetGenerator(private val useV2Fields: Boolean = false) : CsvSheetGenerator {
-    override fun getDataRow(id: UUID, recordMessage: AirbyteRecordMessage, generationId: Long): List<Any> {
+    override fun getDataRow(
+        id: UUID,
+        recordMessage: AirbyteRecordMessage,
+        generationId: Long
+    ): List<Any> {
         val data: MutableList<Any> = LinkedList()
 
         if (useV2Fields) {
